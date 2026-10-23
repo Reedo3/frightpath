@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>FrightPath — HHN Night Planner</title>
+  <meta name="description" content="Free amusement-park night planner. Optimize your route, track your night.">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d0817">
+  <!-- iOS Add to Home Screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FrightPath">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>🎃 FrightPath</h1>
+    <div class="tagline" id="park-tagline">Loading park…</div>
+  </header>
+
+  <main>
+    <!-- ============ HOME ============ -->
+    <section id="screen-home" class="screen active">
+      <div class="beta-note">
+        <strong>Beta:</strong> house locations &amp; wait estimates are approximate.
+        Edit them freely in <code>parks/hhn35.json</code> — no code changes needed.
+      </div>
+
+      <div id="resume-box" style="display:none">
+        <button class="btn secondary" id="btn-resume">▶ Resume tonight's tracking</button>
+      </div>
+
+      <h2>Pick your must-do houses</h2>
+      <div class="house-list" id="house-list"></div>
+
+      <div class="toggle-row" id="express-toggle" role="switch" aria-checked="false" tabindex="0">
+        <span>🎟️ I have Express Pass</span>
+        <span class="toggle"></span>
+      </div>
+
+      <div class="field">
+        <label for="start-time">Night start time</label>
+        <input type="time" id="start-time" value="18:30">
+      </div>
+
+      <button class="btn" id="btn-build">Build my route →</button>
+    </section>
+
+    <!-- ============ ROUTE ============ -->
+    <section id="screen-route" class="screen">
+      <h2>Your optimized route</h2>
+      <div class="route-total" id="route-total"></div>
+      <div id="route-stops"></div>
+
+      <!-- TODO: affiliate slot — replace the placeholder below with a real
+           affiliate link (e.g. Undercover Tourist / Viator) once the program
+           approves the site. Keep the card styling; just wire the href. -->
+      <div class="aff-card">
+        <div class="aff-title">🎫 Get HHN tickets</div>
+        <div class="aff-sub">Buying through our link supports FrightPath at no extra cost to you.</div>
+        <div class="aff-badge">Affiliate link coming soon</div>
+      </div>
+
+      <!-- TODO: affiliate slot — Express Pass upsell. Verify availability through
+           third-party affiliate programs before promising it (may not be offered). -->
+      <div class="aff-card">
+        <div class="aff-title">⚡ Add Express Pass</div>
+        <div class="aff-sub">Skip the standby lines on your must-do houses.</div>
+        <div class="aff-badge">Affiliate link coming soon</div>
+      </div>
+
+      <button class="btn" id="btn-start-night">Start my night →</button>
+      <button class="btn ghost" id="btn-back-home">← Change my picks</button>
+    </section>
+
+    <!-- ============ TRACKER ============ -->
+    <section id="screen-tracker" class="screen">
+      <h2>Night tracker</h2>
+      <div class="tally">
+        <div class="tally-box"><div class="tally-num" id="tally-done">0</div><div class="tally-label">houses done</div></div>
+        <div class="tally-box"><div class="tally-num" id="tally-lines">0m</div><div class="tally-label">time in lines</div></div>
+        <div class="tally-box"><div class="tally-num" id="tally-left">–</div><div class="tally-label">houses left</div></div>
+      </div>
+
+      <div class="tracker-current" id="tracker-current"></div>
+
+      <h3>Up next</h3>
+      <div class="next-up" id="next-up"></div>
+
+      <button class="btn secondary" id="btn-end-night">End night → summary</button>
+    </section>
+
+    <!-- ============ SUMMARY ============ -->
+    <section id="screen-summary" class="screen">
+      <h2>Night summary</h2>
+      <div class="summary-hero">
+        <div class="big" id="sum-count">0</div>
+        <div>houses conquered</div>
+      </div>
+      <div class="route-total" id="sum-totals"></div>
+      <h3>Your logged waits</h3>
+      <div id="sum-log"></div>
+      <button class="btn" id="btn-new-night">Plan another night</button>
+    </section>
+  </main>
+
+  <footer>
+    FrightPath · free forever · wait times are estimates, not promises<br>
+    Not affiliated with Universal Orlando.
+  </footer>
+
+  <script src="optimizer.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Service worker: cache everything for offline park use.
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
